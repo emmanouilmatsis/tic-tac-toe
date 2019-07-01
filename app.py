@@ -16,4 +16,4 @@ def index():
 
 
 if __name__ == "__main__":
-    bottle.run(app, host="localhost", port=8080, debug=True, reloader=True)
+    bottle.run(app, host="localhost", port=8080, debug=False, reloader=False)
