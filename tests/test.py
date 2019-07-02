@@ -64,12 +64,14 @@ class StrategyTestCase(unittest.TestCase):
         boards = [
                 ("xox ox   ", "xox ox o "), # win
                 ("x xo     ", "xoxo     "), # block
-                ("o  x   xo", "oo x   xo"), # fork
+                ("o  xxo   ", "o oxxo   "), # fork
                 ("x   o   x", "xo  o   x"), # blockfork
                 ("x        ", "x   o    "), # center
                 ("o   x   x", "o o x   x"), # opposite
                 ("         ", "    o    "), # empty
                 ("o   x    ", "oo  x    "), # side
+                (" x oo x  ", " x ooox  "), # side
+                ("  xoo x  ", "  xooox  "), # side
                 ]
 
         for board in boards:

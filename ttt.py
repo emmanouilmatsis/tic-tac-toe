@@ -18,10 +18,10 @@ def play(board, player):
     if not is_valid(board):
         raise ValueError
 
-    board, score = minimax(board, player)
+    board, _, _ = minimax(board, player, 0)
     return board
 
-def minimax(board, player):
+def minimax(board, player, k):
     """Minimax reursive algorith to find next move for player on board.
 
     Args:
@@ -36,28 +36,20 @@ def minimax(board, player):
 
     # if board is empty return center opening move.
     if is_empty(board):
-        return (f"    {player}    ", 0)
+        return (f"    {player}    ", 0, k)
 
     # If board is full or has a winner then evaluate.
     if is_game_over(board):
-        return (None, evaluate(winner(board)))
+        return (None, evaluate(winner(board)), k)
 
-    # Initial result value
-    result = (None, math.inf if player == "x" else -math.inf)
+    # Generate all possible next moves.
+    results = [(move, *minimax(move, "x" if player == "o" else "o", k+1)[1:]) for move in moves(board, player)]
 
-    # Iterate over all possible next boards.
-    for board in boards(board, player):
-        _, score = minimax(board, "x" if player == "o" else "o")
-
-        # Break from recursion if player wins.
-        if score == evaluate(player):
-            return (board, score)
-
-        # Minimaximize.
-        if player == "x":
-            result = (board, score) if score < result[1] else result # minimize
-        else:
-            result = (board, score) if score > result[1]  else result # maximize
+    # Minimaximize.
+    if player == "x":
+        result = min(results, key=lambda x: (x[1], -x[2]))
+    else:
+        result = max(results, key=lambda x: (x[1], -x[2]))
 
     return result
 
@@ -109,7 +101,7 @@ def winner(board):
 
     return None
 
-def boards(board, player):
+def moves(board, player):
     """Generate all possible new boards from board.
 
     Args:
@@ -123,13 +115,13 @@ def boards(board, player):
 
     indices = [i for i, v in enumerate(board) if v == " "]
 
-    boards = []
+    moves = []
     for index in indices:
         tmp = board.copy()
         tmp[index] = player
-        boards.append(tmp)
+        moves.append(tmp)
 
-    return boards
+    return moves
 
 def is_game_over(board):
     """Test if board is full or has a winner."""
